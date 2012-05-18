@@ -1,0 +1,83 @@
+#!/bin/sh
+
+usage() {
+  echo "Usage: $0 [ARGS] [COMMAND]"
+  echo
+  echo "It counts upward (incrementing by 1, default) or downward"
+  echo "(decrementing by 1, -d) starting at integer BEGIN (-b, default: 0)"
+  echo "with a configurable floating point interval of SECS seconds (-n,"
+  echo "default 1.0) until infinity (default) or up to a maximum number of"
+  echo "COUNT intervals (-c). It can operate silently and not print this"
+  echo "counter (-s). It optionally executes a COMMAND per interval which it"
+  echo "can also fork (-f) in case the command is expected to take longer"
+  echo "than SECS seconds."
+  echo
+  echo "  -f       fork COMMAND"
+  echo "  -s       silent, do not print counter"
+  echo "  -d       count downward (default: upward)"
+  echo "  -n SECS  interval of SECS in floating point (default: 1.0)"
+  echo "  -c COUNT only run for COUNT interval(s) (default: -1 = infinity)"
+  echo "  -b BEGIN start counting at BEGIN (default: 0)"
+  echo "  -h       print this help message"
+}
+
+INTERVAL=1.0
+MAX_COUNT=-1
+DOWN=0
+SILENT=0
+FORK=0
+BEGIN=0
+
+while getopts fsdn:c:b:h option; do
+  case $option in
+    f)
+      FORK=1
+      ;;
+    s)
+      SILENT=1
+      ;;
+    d)
+      DOWN=1
+      ;;
+    n)
+      INTERVAL="$OPTARG"
+      ;;
+    c)
+      MAX_COUNT="$OPTARG"
+      ;;
+    b)
+      BEGIN="$OPTARG"
+      ;;
+    h)
+      usage
+      exit 0
+      ;;
+    [?])
+      usage 1>&2
+      exit 1
+      ;;
+  esac
+done
+shift $(($OPTIND - 1))
+
+TIMESTAMP=`sleepenh 0`
+
+I=$BEGIN
+while true; do
+  if [ $# -ne 0 ]; then
+    if [ $FORK -eq 1 ]; then
+      $@ &
+    else
+      $@
+    fi
+  fi
+  [ $SILENT -eq 0 ] && echo $I
+  if [ $DOWN -eq 1 ]; then
+    I=$((I-1))
+    [ $MAX_COUNT -ne -1 ] && [ $((BEGIN-I)) -gt $MAX_COUNT ] && break
+  else
+    I=$((I+1))
+    [ $MAX_COUNT -ne -1 ] && [ $((I-BEGIN)) -gt $MAX_COUNT ] && break
+  fi
+  TIMESTAMP=`sleepenh $TIMESTAMP $INTERVAL`;
+done
