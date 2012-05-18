@@ -25,23 +25,23 @@ Features
 Usage
 =====
 
-Usage: periodic [ARGS] [COMMAND]
+	Usage: periodic [ARGS] [COMMAND]
 
 It counts upward (incrementing by 1, default) or downward (decrementing by 1,
--d) starting at integer BEGIN (-b, default: 0) with a configurable floating
-point interval of SECS seconds (-n, default 1.0) until infinity (default) or up
-to a maximum number of COUNT intervals (-c). It can operate silently and not
-print this counter (-s). It optionally executes a COMMAND per interval which it
-can also fork (-f) in case the command is expected to take longer than SECS
-seconds.
+`-d`) starting at integer `BEGIN` (`-b`, default: 0) with a configurable
+floating point interval of `SECS` seconds (`-n`, default 1.0) until infinity
+(default) or up to a maximum number of `COUNT` intervals (`-c`). It can operate
+silently and not print this counter (`-s`). It optionally executes a `COMMAND`
+per interval which it can also fork (`-f`) in case the command is expected to
+take longer than `SECS` seconds.
 
-  -f       fork COMMAND
-  -s       silent, do not print counter
-  -d       count downward (default: upward)
-  -n SECS  interval of SECS in floating point (default: 1.0)
-  -c COUNT only run for COUNT interval(s) (default: -1 = infinity)
-  -b BEGIN start counting at BEGIN (default: 0)
-  -h       print this help message
+	-f       fork COMMAND
+	-s       silent, do not print counter
+	-d       count downward (default: upward)
+	-n SECS  interval of SECS in floating point (default: 1.0)
+	-c COUNT only run for COUNT interval(s) (default: -1 = infinity)
+	-b BEGIN start counting at BEGIN (default: 0)
+	-h       print this help message
 
 History
 =======
